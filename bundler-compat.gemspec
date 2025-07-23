@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Thomas Countz"]
   spec.email = ["thomascountz@gmail.com"]
 
-  spec.summary = "library and bundler plugin for identifying dependency conflicts in Ruby projects."
-  spec.description = "This gem provides tools to find and report dependency conflicts in Ruby projects using Bundler."
+  spec.summary = "Bundler plugin for identifying dependency conflicts in Ruby projects."
+  spec.description = "This gem provides tools to find and report dependency conflicts in Ruby projects using Bundler. Can be used as a library or installed as a bundler plugin."
   spec.homepage = "https://github.com/thomascountz/bundler-compat"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.1.0"
@@ -17,7 +17,6 @@ Gem::Specification.new do |spec|
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/thomascountz/bundler-compat"
   spec.metadata["changelog_uri"] = "https://github.com/thomascountz/bundler-compat/blob/main/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
@@ -33,5 +32,5 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "bundler", ">= 2.0"
+  spec.add_dependency "bundler", "~> 2.0"
 end
