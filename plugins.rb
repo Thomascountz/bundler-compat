@@ -17,14 +17,14 @@ class BundlerCompatPlugin < Bundler::Plugin::API
       results = conflict_finder.search
 
       reporter = case format
-                 when "json"
-                   Bundler::Compat::Reporters::JsonReporter.new(results)
-                 when "plain"
-                   Bundler::Compat::Reporters::TextReporter.new(results)
-                 else
-                   Bundler.ui.error "Invalid format: #{format}. Use 'json' or 'plain'."
-                   exit 1
-                 end
+      when "json"
+        Bundler::Compat::Reporters::JsonReporter.new(results)
+      when "plain"
+        Bundler::Compat::Reporters::TextReporter.new(results)
+      else
+        Bundler.ui.error "Invalid format: #{format}. Use 'json' or 'plain'."
+        exit 1
+      end
 
       reporter.print
 
@@ -46,12 +46,12 @@ class BundlerCompatPlugin < Bundler::Plugin::API
 
     parser = OptionParser.new do |opts|
       opts.banner = "Usage: bundle compat [target_version] [options]"
-      
-      opts.on("-f", "--format FORMAT", ["json", "plain"], 
-              "Output format (json, plain)") do |format|
+
+      opts.on("-f", "--format FORMAT", ["json", "plain"],
+        "Output format (json, plain)") do |format|
         options[:format] = format
       end
-      
+
       opts.on("-h", "--help", "Show this help") do
         Bundler.ui.info opts
         exit 0
