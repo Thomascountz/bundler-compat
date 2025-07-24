@@ -12,7 +12,7 @@ class BundlerCompatPlugin < Bundler::Plugin::API
       conflict_finder = Bundler::Compat::ConflictFinder.new(target_version: target_version)
       results = conflict_finder.search
 
-      reporter = Bundler::Compat::Reporters::TextReporter.new(results)
+      reporter = Bundler::Compat::Reporters::JsonReporter.new(results)
       reporter.print
 
       if results.conflicts.any?

@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     bundler-compat (0.1.0)
-      bundler (>= 2.0)
+      bundler (~> 2.0)
 
 GEM
   remote: https://rubygems.org/
