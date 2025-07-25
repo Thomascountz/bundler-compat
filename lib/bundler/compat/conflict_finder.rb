@@ -13,7 +13,7 @@ module Bundler
 
       attr_reader :lockfile, :target_version
 
-      def initialize(lockfile_contents: File.read("Gemfile.lock"), target_version: "8.1.0")
+      def initialize(lockfile_contents: File.read(Bundler.default_lockfile), target_version: "8.1.0")
         @target_version = Gem::Version.new(target_version)
         @lockfile = Bundler::LockfileParser.new(lockfile_contents)
         @spec_by_name = lockfile.specs
