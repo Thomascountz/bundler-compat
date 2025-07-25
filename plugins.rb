@@ -18,9 +18,9 @@ class BundlerCompatPlugin < Bundler::Plugin::API
 
       reporter = case format
       when "json"
-        Bundler::Compat::Reporters::JsonReporter.new(results)
+        Bundler::Compat::Reporters::JsonReporter.new(results, target_version: target_version)
       when "plain"
-        Bundler::Compat::Reporters::TextReporter.new(results)
+        Bundler::Compat::Reporters::TextReporter.new(results, target_version: target_version)
       else
         Bundler.ui.error "Invalid format: #{format}. Use 'json' or 'plain'."
         exit 1

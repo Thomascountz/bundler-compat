@@ -8,10 +8,9 @@ module Bundler
       class JsonReporter < BaseReporter
         def print(output: $stdout)
           report_data = {
-            bundle_compatibility_report: {
-              conflicts_count: results.conflicts.size,
-              conflicts: format_conflicts
-            }
+            target_rails_version: target_version,
+            conflicts_count: results.conflicts.size,
+            conflicts: format_conflicts_hierarchical
           }
 
           output.puts JSON.pretty_generate(report_data)
@@ -19,17 +18,21 @@ module Bundler
 
         private
 
-        def format_conflicts
-          results.conflicts.map do |conflict|
+        def format_conflicts_hierarchical
+          results.conflicts.group_by(&:direct_dependency).map do |direct_dep, direct_dep_conflicts|
             {
-              direct_dependency: conflict.direct_dependency,
-              direct_dependency_version: conflict.direct_dependency_version,
-              blocking_dependency: conflict.blocking_dependency,
-              blocking_dependency_version: conflict.blocking_dependency_version,
-              target_dependency: conflict.target_dependency,
-              target_dependency_version: conflict.target_dependency_version,
-              target_dependency_requirement: conflict.target_dependency_requirement,
-              dependency_chain: conflict.dependency_chain
+              direct_dependency: direct_dep,
+              direct_dependency_version: direct_dep_conflicts.first.direct_dependency_version,
+              blocking_dependencies: direct_dep_conflicts.map do |conflict|
+                {
+                  blocking_dependency: conflict.blocking_dependency,
+                  blocking_dependency_version: conflict.blocking_dependency_version,
+                  target_dependency: conflict.target_dependency,
+                  target_dependency_version: conflict.target_dependency_version,
+                  target_dependency_requirement: conflict.target_dependency_requirement,
+                  dependency_chain: conflict.dependency_chain
+                }
+              end
             }
           end
         end
