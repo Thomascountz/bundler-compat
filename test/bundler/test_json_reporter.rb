@@ -2,6 +2,7 @@
 
 require "test_helper"
 require "bundler/compat/reporters/json_reporter"
+require "bundler/compat/target_gem"
 require "bundler/compat/result"
 require "json"
 require "stringio"
@@ -9,14 +10,16 @@ require "stringio"
 class TestJsonReporter < Minitest::Test
   def test_empty_results_json_output
     results = Bundler::Compat::Result::Group.new
-    reporter = Bundler::Compat::Reporters::JsonReporter.new(results, target_version: "7.0.0")
+    target_gem = Bundler::Compat::TargetGem.new(name: "rails", version: "7.0.0")
+    reporter = Bundler::Compat::Reporters::JsonReporter.new(results, target_gem: target_gem)
 
     output = StringIO.new
     reporter.print(output: output)
 
     json_data = JSON.parse(output.string)
 
-    assert_equal "7.0.0", json_data["target_rails_version"]
+    assert_equal "rails", json_data["target_gem"]
+    assert_equal "7.0.0", json_data["target_version"]
     assert_equal 0, json_data["conflicts_count"]
     assert_equal [], json_data["conflicts"]
   end
@@ -36,14 +39,16 @@ class TestJsonReporter < Minitest::Test
     results = Bundler::Compat::Result::Group.new
     results.add(conflict)
 
-    reporter = Bundler::Compat::Reporters::JsonReporter.new(results, target_version: "7.0.0")
+    target_gem = Bundler::Compat::TargetGem.new(name: "rails", version: "7.0.0")
+    reporter = Bundler::Compat::Reporters::JsonReporter.new(results, target_gem: target_gem)
 
     output = StringIO.new
     reporter.print(output: output)
 
     json_data = JSON.parse(output.string)
 
-    assert_equal "7.0.0", json_data["target_rails_version"]
+    assert_equal "rails", json_data["target_gem"]
+    assert_equal "7.0.0", json_data["target_version"]
     assert_equal 1, json_data["conflicts_count"]
     assert_equal 1, json_data["conflicts"].size
 
@@ -88,14 +93,16 @@ class TestJsonReporter < Minitest::Test
     results.add(conflict1)
     results.add(conflict2)
 
-    reporter = Bundler::Compat::Reporters::JsonReporter.new(results, target_version: "7.0.0")
+    target_gem = Bundler::Compat::TargetGem.new(name: "rails", version: "7.0.0")
+    reporter = Bundler::Compat::Reporters::JsonReporter.new(results, target_gem: target_gem)
 
     output = StringIO.new
     reporter.print(output: output)
 
     json_data = JSON.parse(output.string)
 
-    assert_equal "7.0.0", json_data["target_rails_version"]
+    assert_equal "rails", json_data["target_gem"]
+    assert_equal "7.0.0", json_data["target_version"]
     assert_equal 2, json_data["conflicts_count"]
     assert_equal 2, json_data["conflicts"].size
   end

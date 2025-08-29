@@ -8,10 +8,12 @@ module Bundler
       class JsonReporter < BaseReporter
         def print(output: $stdout)
           report_data = {
-            target_rails_version: target_version,
+            target_gem: target_gem.name,
+            target_version: target_gem.version.to_s,
+            target_components: target_gem.components? ? target_gem.target_gems.to_a.sort : nil,
             conflicts_count: results.conflicts.size,
             conflicts: format_conflicts_hierarchical
-          }
+          }.compact
 
           output.puts JSON.pretty_generate(report_data)
         end

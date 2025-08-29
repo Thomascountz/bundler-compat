@@ -1,4 +1,5 @@
 require "bundler"
+require "bundler/compat/target_gem"
 require "bundler/compat/result"
 
 module Bundler
@@ -6,15 +7,10 @@ module Bundler
     class ConflictFinder
       MAX_DEPTH = 10
 
-      RAILS_COMPONENTS = %w[
-        actioncable actionmailbox actionmailer actionpack actiontext actionview
-        activejob activemodel activerecord activestorage activesupport railties rails
-      ].to_set
+      attr_reader :lockfile, :target_gem
 
-      attr_reader :lockfile, :target_version
-
-      def initialize(lockfile_contents: File.read(Bundler.default_lockfile), target_version: "8.1.0")
-        @target_version = Gem::Version.new(target_version)
+      def initialize(target_gem:, lockfile_contents: File.read(Bundler.default_lockfile))
+        @target_gem = target_gem
         @lockfile = Bundler::LockfileParser.new(lockfile_contents)
         @spec_by_name = lockfile.specs
           .group_by(&:name) # Faster lookups
@@ -33,7 +29,7 @@ module Bundler
 
       def traverse(node, root_node, visited_nodes, results, dependency_chain = [], depth = 0)
         return if depth > MAX_DEPTH
-        return if RAILS_COMPONENTS.include?(node)
+        return if target_gem.target_gems.include?(node)
         return if visited_nodes.include?(node)
 
         visited_nodes.add(node)
@@ -43,8 +39,8 @@ module Bundler
         current_dependency_chain = dependency_chain + ["#{node} (#{current_spec.version})"]
 
         current_spec.runtime_dependencies.each do |dependency|
-          if RAILS_COMPONENTS.include?(dependency.name)
-            if !dependency.requirement.satisfied_by?(target_version)
+          if target_gem.target_gems.include?(dependency.name)
+            if !dependency.requirement.satisfied_by?(target_gem.version)
               results.add(
                 Result::Conflict.new(
                   direct_dependency: root_spec.name,
@@ -52,7 +48,7 @@ module Bundler
                   blocking_dependency: current_spec.name,
                   blocking_dependency_version: current_spec.version.to_s,
                   target_dependency: dependency.name,
-                  target_dependency_version: target_version.to_s,
+                  target_dependency_version: target_gem.version.to_s,
                   target_dependency_requirement: dependency.requirement.to_s,
                   dependency_chain: current_dependency_chain.join(" -> ")
                 )

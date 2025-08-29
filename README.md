@@ -1,6 +1,6 @@
 # bundler-compat
 
-A Ruby gem that provides tools to find and report dependency conflicts in Ruby projects using Bundler. Specifically focuses on identifying conflicts with Rails components when upgrading to newer versions.
+A Ruby gem that provides tools to find and report dependency conflicts in Ruby projects using Bundler.
 
 ## Installation
 
@@ -23,20 +23,17 @@ bundle plugin install --git 'https://github.com/thomascountz/bundler-compat' --b
 
 ### As a Bundler Plugin
 
-Check compatibility against default Rails version (8.1.0):
+Check dependency conflicts for a specific gem version:
 ```bash
-bundle compat
-```
-
-Check against a specific Rails version:
-```bash
-bundle compat 7.0.0
+bundle compat rails 7.0.0
+bundle compat devise 4.9.0
+bundle compat rspec 4.0.0
 ```
 
 Output results in JSON format:
 ```bash
-bundle compat --format json
-bundle compat 7.0.0 --format json
+bundle compat rails 8.1.0 --format json
+bundle compat devise 4.9.0 --format json
 ```
 
 Show help:
@@ -54,13 +51,16 @@ require 'bundler/compat'
 # Read your Gemfile.lock
 lockfile_contents = File.read('Gemfile.lock')
 
-# Find conflicts for Rails 7.0.0
-finder = Bundler::Compat::ConflictFinder.new(lockfile_contents, '7.0.0')
+# Create target gem specification
+target_gem = Bundler::Compat::TargetGem.new(name: 'rails', version: '7.0.0')
+
+# Find conflicts
+finder = Bundler::Compat::ConflictFinder.new(lockfile_contents: lockfile_contents, target_gem: target_gem)
 results = finder.search
 
 # Output results
-reporter = Bundler::Compat::Reporters::TextReporter.new
-reporter.report(results)
+reporter = Bundler::Compat::Reporters::TextReporter.new(results, target_gem: target_gem)
+reporter.print
 ```
 
 ## Development

@@ -23,9 +23,10 @@ class TestConflictFinder < Minitest::Test
          2.4.0
     LOCKFILE
 
+    target_gem = Bundler::Compat::TargetGem.new(name: "rails", version: "7.0.0")
     finder = Bundler::Compat::ConflictFinder.new(
       lockfile_contents: lockfile_content,
-      target_version: "7.0.0"
+      target_gem: target_gem
     )
 
     results = finder.search
@@ -50,9 +51,10 @@ class TestConflictFinder < Minitest::Test
          2.4.0
     LOCKFILE
 
+    target_gem = Bundler::Compat::TargetGem.new(name: "rails", version: "7.0.0")
     finder = Bundler::Compat::ConflictFinder.new(
       lockfile_contents: lockfile_content,
-      target_version: "7.0.0"
+      target_gem: target_gem
     )
 
     results = finder.search
@@ -90,9 +92,10 @@ class TestConflictFinder < Minitest::Test
          2.4.0
     LOCKFILE
 
+    target_gem = Bundler::Compat::TargetGem.new(name: "rails", version: "7.0.0")
     finder = Bundler::Compat::ConflictFinder.new(
       lockfile_contents: lockfile_content,
-      target_version: "7.0.0"
+      target_gem: target_gem
     )
 
     results = finder.search
@@ -129,9 +132,10 @@ class TestConflictFinder < Minitest::Test
          2.4.0
     LOCKFILE
 
+    target_gem = Bundler::Compat::TargetGem.new(name: "rails", version: "7.0.0")
     finder = Bundler::Compat::ConflictFinder.new(
       lockfile_contents: lockfile_content,
-      target_version: "7.0.0"
+      target_gem: target_gem
     )
 
     results = finder.search

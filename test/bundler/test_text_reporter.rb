@@ -2,19 +2,21 @@
 
 require "test_helper"
 require "bundler/compat/reporters/text_reporter"
+require "bundler/compat/target_gem"
 require "bundler/compat/result"
 require "stringio"
 
 class TestTextReporter < Minitest::Test
   def test_reports_no_conflicts
     results = Bundler::Compat::Result::Group.new
-    reporter = Bundler::Compat::Reporters::TextReporter.new(results, target_version: "7.0.0")
+    target_gem = Bundler::Compat::TargetGem.new(name: "rails", version: "7.0.0")
+    reporter = Bundler::Compat::Reporters::TextReporter.new(results, target_gem: target_gem)
 
     output = StringIO.new
     reporter.print(output: output)
 
     assert_includes output.string, "Bundle Compatibility Report"
-    assert_includes output.string, "Target Rails version: 7.0.0"
+    assert_includes output.string, "Target rails version: 7.0.0"
     assert_includes output.string, "Found 0 conflicts(s)"
   end
 
@@ -33,7 +35,8 @@ class TestTextReporter < Minitest::Test
     results = Bundler::Compat::Result::Group.new
     results.add(conflict)
 
-    reporter = Bundler::Compat::Reporters::TextReporter.new(results, target_version: "7.0.0")
+    target_gem = Bundler::Compat::TargetGem.new(name: "rails", version: "7.0.0")
+    reporter = Bundler::Compat::Reporters::TextReporter.new(results, target_gem: target_gem)
 
     output = StringIO.new
     reporter.print(output: output)
@@ -73,7 +76,8 @@ class TestTextReporter < Minitest::Test
     results.add(conflict1)
     results.add(conflict2)
 
-    reporter = Bundler::Compat::Reporters::TextReporter.new(results, target_version: "7.0.0")
+    target_gem = Bundler::Compat::TargetGem.new(name: "rails", version: "7.0.0")
+    reporter = Bundler::Compat::Reporters::TextReporter.new(results, target_gem: target_gem)
 
     output = StringIO.new
     reporter.print(output: output)

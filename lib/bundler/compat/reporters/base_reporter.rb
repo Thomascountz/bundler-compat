@@ -2,9 +2,10 @@ module Bundler
   module Compat
     module Reporters
       class BaseReporter
-        def initialize(results, target_version:)
+        def initialize(results, target_gem:)
           @results = results
-          @target_version = target_version
+          @target_gem = target_gem
+          raise ArgumentError, "target_gem is required" if target_gem.nil?
         end
 
         def print(results, output: $stdout)
@@ -13,13 +14,13 @@ module Bundler
 
         private
 
-        attr_reader :results, :target_version
+        attr_reader :results, :target_gem
 
         def preamble
           <<~REPORT.lines
             Bundle Compatibility Report
             #{"=" * 50}
-            Target Rails version: #{target_version}
+            Target #{target_gem.name} version: #{target_gem.version}
             Found #{results.conflicts.size} conflicts(s)
 
           REPORT
