@@ -70,7 +70,6 @@ class BundlerCompatPlugin < Bundler::Plugin::API
         options[:format] = format
       end
 
-
       opts.on("-h", "--help", "Show this help") do
         Bundler.ui.info opts
         exit 0
